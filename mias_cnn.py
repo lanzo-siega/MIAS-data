@@ -8,8 +8,10 @@ from keras.utils import to_categorical
 from tqdm import tqdm
 
 train_image = []
-
 realt = X_train0['ID']
+
+# creating a training dataframe from the image dataset by converting each image 
+# an array and appending to train_image
 
 for i in tqdm(realt):
   img = image.load_img('{}.pgm'.format(i), target_size=(28,28,1),grayscale=True)
@@ -17,8 +19,8 @@ for i in tqdm(realt):
   img = img/255
   train_image.append(img)
 
+# creating new training set from train_image and y_train arrays
 X = np.array(train_image)
-
 y = to_categorical(y_train0)
 
 # creating a validation set from the training set at 80-20 split
@@ -41,7 +43,7 @@ model.add(Activation("relu"))
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Dropout(0.25))
 
-# 2 flatten and dense layers
+# two flatten and dense layers
 model.add(Flatten())
 model.add(Dense(128))
 model.add(Activation("relu"))
