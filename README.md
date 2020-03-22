@@ -1,7 +1,7 @@
 # MIAS-data
 
 ## Files:
-* __setup.py__: code reading the csv file and creating the training and test data sets
+* __setup.py__: code for reading the csv file and creating the training and test data sets
 * __mias_cnn.py__: code for creating the Convolutional Neural Network model
 * __acc_graph.jpg__: graph of the model's accuracy per epoch
 
