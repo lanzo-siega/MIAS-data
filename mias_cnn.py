@@ -1,30 +1,42 @@
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten, Activation, Conv2D, MaxPooling2D
-from keras.utils import to_categorical
-from keras.preprocessing import image
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Flatten, Activation, Conv2D, MaxPooling2D
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.preprocessing import image
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from keras.utils import to_categorical
+from tensorflow.keras.utils import to_categorical
 from tqdm import tqdm
 
 train_image = []
-realt = X_train0['ID']
+realt = X_train1['ID']
 
 # creating a training dataframe from the image dataset by converting each image 
 # an array and appending to train_image
 
 for i in tqdm(realt):
-  img = image.load_img('{}.pgm'.format(i), target_size=(28,28,1),grayscale=True)
+  img = image.load_img('/MIAS/Dataset/Train/{}.pgm'.format(i), 
+                       target_size=(28,28,1),grayscale=True)
   img = image.img_to_array(img)
   img = img/255
   train_image.append(img)
 
 # creating new training set from train_image and y_train arrays
 X = np.array(train_image)
-y = to_categorical(y_train0)
+y = to_categorical(y_train1)
 
-# creating a validation set from the training set at 80-20 split
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=60, test_size=0.2)
+# creating a validation set for the CNN to pass through
+val_image = []
+valt = X_test1['ID']
+
+for i in tqdm(valt):
+  img = image.load_img('/MIAS/Dataset/Validation/{}.pgm'.format(i), 
+                       target_size=(28,28,1),grayscale=True)
+  img = image.img_to_array(img)
+  img = img/255
+  val_image.append(img)
+
+valX = np.array(val_image)
+valy = to_categorical(y_test1)
 
 # building the model
 model = Sequential()
@@ -57,12 +69,12 @@ model.add(Dense(4, activation='softmax'))
 model.compile(loss='categorical_crossentropy',optimizer='Adam',metrics=['accuracy'])
 
 # fitting the model
-hist = model.fit(X, y, batch_size=127, epochs=150, validation_data=(X_test, y_test))
+hist = model.fit(X, y, batch_size=127, epochs=150, validation_data=(valX, valy))
 
 # graphing the model's accuracy per epoch
 print(hist.history.keys())
 plt.figure(1)
-plt.plot(hist.history['acc'])
+plt.plot(hist.history['accuracy'])
 plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
